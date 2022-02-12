@@ -1,5 +1,5 @@
 # Connectivity info for Linux VM
-NIXADDR ?= 192.168.64.4
+NIXADDR ?= 192.168.64.6
 NIXPORT ?= 22
 NIXUSER ?= jarno
 
@@ -21,47 +21,18 @@ test:
 
 # bootstrap a brand new VM. The VM should have NixOS ISO on the CD drive
 # and just set the password of the root user to "root". This will install
-# NixOS. After installing NixOS, you must reboot and set the root password
-# for the next step.
-#
-# NOTE(mitchellh): I'm sure there is a way to do this and bootstrap all
-# in one step but when I tried to merge them I got errors. One day.
-vm/bootstrap0:
-	ssh $(SSH_OPTIONS) -p$(NIXPORT) root@$(NIXADDR) " \
-		parted /dev/$(NIXBLOCKDEVICE) -- mklabel gpt; \
-		parted /dev/$(NIXBLOCKDEVICE) -- mkpart primary 512MiB -8GiB; \
-		parted /dev/$(NIXBLOCKDEVICE) -- mkpart primary linux-swap -8GiB 100\%; \
-		parted /dev/$(NIXBLOCKDEVICE) -- mkpart ESP fat32 1MiB 512MiB; \
-		parted /dev/$(NIXBLOCKDEVICE) -- set 3 esp on; \
-		mkfs.ext4 -L nixos /dev/$(NIXBLOCKDEVICE)1; \
-		mkswap -L swap /dev/$(NIXBLOCKDEVICE)2; \
-		mkfs.fat -F 32 -n boot /dev/$(NIXBLOCKDEVICE)3; \
-		mount /dev/disk/by-label/nixos /mnt; \
-		mkdir -p /mnt/boot; \
-		mount /dev/disk/by-label/boot /mnt/boot; \
-		nixos-generate-config --root /mnt; \
-		sed --in-place '/system\.stateVersion = .*/a \
-			nix.package = pkgs.nixUnstable;\n \
-			nix.extraOptions = \"experimental-features = nix-command flakes\";\n \
-  			services.openssh.enable = true;\n \
-			services.openssh.passwordAuthentication = true;\n \
-			services.openssh.permitRootLogin = \"yes\";\n \
-			users.users.root.initialPassword = \"root\";\n \
-		' /mnt/etc/nixos/configuration.nix; \
-		nixos-install --no-root-passwd; \
-		reboot; \
-	"
-
-# after bootstrap0, run this to finalize. After this, do everything else
-# in the VM unless secrets change.
+# NixOS.
 vm/bootstrap:
-	NIXUSER=root $(MAKE) vm/copy
-	NIXUSER=root $(MAKE) vm/switch
-	$(MAKE) vm/secrets
-	ssh $(SSH_OPTIONS) -p$(NIXPORT) $(NIXUSER)@$(NIXADDR) " \
-		sudo reboot; \
-	"
+	$(MAKE) vm/copy
+	$(MAKE) vm/install
+	# $(MAKE) vm/secrets
 
+vm/install:
+	ssh $(SSH_OPTIONS) -p$(NIXPORT) root@$(NIXADDR) " \
+		nix-channel --add https://nixos.org/channels/nixos-unstable; \
+		nix-channel --update; \
+		nix-shell -p nix /nix-config/default.nix \
+	"
 
 # copy our secrets into the VM
 vm/secrets:
@@ -84,7 +55,7 @@ vm/copy:
 		--exclude='.git-crypt/' \
 		--exclude='iso/' \
 		--rsync-path="sudo rsync" \
-		$(MAKEFILE_DIR)/ $(NIXUSER)@$(NIXADDR):/nix-config
+		$(MAKEFILE_DIR)/ root@$(NIXADDR):/nix-config
 
 vm/copyback:
 	rsync -av -e 'ssh $(SSH_OPTIONS) -p$(NIXPORT)' \
@@ -93,15 +64,4 @@ vm/copyback:
 		--exclude='.git-crypt/' \
 		--exclude='iso/' \
 		--rsync-path="sudo rsync" \
-		$(NIXUSER)@$(NIXADDR):/nix-config/ $(MAKEFILE_DIR)
-
-# run the nixos-rebuild switch command. This does NOT copy files so you
-# have to run vm/copy before.
-vm/switch:
-	ssh $(SSH_OPTIONS) -p$(NIXPORT) $(NIXUSER)@$(NIXADDR) " \
-		sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild -v switch --flake \"/nix-config#dev\" \
-	"
-
-# Build an ISO image
-iso/nixos.iso:
-	cd iso; ./build.sh
+		root@$(NIXADDR):/nix-config/ $(MAKEFILE_DIR)

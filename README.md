@@ -1,45 +1,33 @@
 
 # Misc NixOS experiments
 
-## Emulator
+Setting up a NixOS dev VM on a Mac M1 laptop.
 
-Download [UTM.dmg](https://github.com/utmapp/UTM/releases/download/v3.0.4-2/UTM.dmg) from https://github.com/utmapp/UTM/releases/
+## Dependencies
 
-## Image
+**Emulator:** download [UTM.dmg](https://github.com/utmapp/UTM/releases/download/v3.0.4-2/UTM.dmg) from [github.com/utmapp/UTM](https://github.com/utmapp/UTM/releases/).
 
-Download [nixos-minimal-...-aarch64-linux.iso](https://hydra.nixos.org/build/166864442/download/1/nixos-minimal-21.11.335858.592b893530e-aarch64-linux.iso) from https://hydra.nixos.org/job/nixos/release-21.11/nixos.iso_minimal.aarch64-linux
+**Image:** download [nixos-minimal-...-aarch64-linux.iso](https://hydra.nixos.org/build/166864442/download/1/nixos-minimal-21.11.335858.592b893530e-aarch64-linux.iso) from [hydra.nixos.org](https://hydra.nixos.org/job/nixos/release-21.11/nixos.iso_minimal.aarch64-linux).
 
 ## Installation
 
-Boot the VM, and using the graphical console, change the root password to "root":
+Boot the VM from the ISO image and start the installation from the console. Note that the unstable channel is needed because release-21.11 has too old Nix version (2.3).
 
-```
-$ sudo su
-$ passwd
+```bash
+sudo su
+passwd
 # change to root
+nix-channel --add https://nixos.org/channels/nixos-unstable
+nix-channel --update
+nix-shell -p nix https://github.com/jseppanen/nixos-config/archive/main.tar.gz
 ```
 
-Run `ifconfig` and get the IP address of the first device. It is probably
-`192.168.58.XXX`, but it can be anything. In a terminal with this repository
-set this to the `NIXADDR` env var:
+The installation takes a couple of minutes and after that the VM reboots automatically.
 
-```
-$ export NIXADDR=<VM ip address>
-```
+## Development
 
-Perform the initial bootstrap. This will install NixOS on the VM disk image
-but will not setup any other configurations yet. This prepares the VM for
-any NixOS customization:
+The installation can also be run locally over SSH, you need to boot from the ISO image and get the VM's IP address with `ifconfig`.
 
+```make
+NIXADDR=192.168.XX.YY make vm/bootstrap
 ```
-$ make vm/bootstrap0
-```
-
-After the VM reboots, run the full bootstrap, this will finalize the
-NixOS customization using this configuration:
-
-```
-$ make vm/bootstrap
-```
-
-You should have a graphical functioning dev VM.
