@@ -1,5 +1,5 @@
 {
-  description = "NixOS systems and tools by mitchellh";
+  description = "Misc NixOS dev box";
 
   inputs = {
     # Pin our primary nixpkgs repository. This is the main nixpkgs repository
@@ -16,38 +16,40 @@
       # We want home-manager to use the same set of nixpkgs as our system.
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Other packages
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    zig.url = "github:arqv/zig-overlay";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: let
-    mkVM = import ./lib/mkvm.nix;
-
-    # Overlays is the list of overlays we want to apply from flake inputs.
-    overlays = [
-      inputs.neovim-nightly-overlay.overlay
-
-      (final: prev: {
-        # Zig doesn't export an overlay so we do it here
-        zig-master = inputs.zig.packages.${prev.system}.master.latest;
-
-        # To get Kitty 0.24.x. Delete this once it hits release.
-        kitty = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.kitty;
-      })
-    ];
-  in {
-    nixosConfigurations.vm-aarch64 = mkVM "vm-aarch64" rec {
-      inherit overlays nixpkgs home-manager;
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+    let
       system = "aarch64-linux";
-      user   = "mitchellh";
-    };
+      user   = "jarno";
+    in {
+    nixosConfigurations.dev = nixpkgs.lib.nixosSystem rec {
+      inherit system;
 
-    nixosConfigurations.vm-intel = mkVM "vm-intel" rec {
-      inherit nixpkgs home-manager overlays;
-      system = "x86_64-linux";
-      user   = "mitchellh";
+      modules = [
+        # Apply our overlays. Overlays are keyed by system type so we have
+        # to go through and apply our system type. We do this first so
+        # the overlays are available globally.
+        { nixpkgs.overlays = [
+          (final: prev: {
+            # To get Kitty 0.24.x. Delete this once it hits release.
+            kitty = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.kitty;
+          })
+          ];
+        }
+
+        ./hardware-configuration.nix
+        ./configuration.nix
+        home-manager.nixosModules.home-manager {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.${user} = import ./users/${user}/home.nix;
+        }
+      ];
+
+      extraArgs = {
+        currentSystem = system;
+      };
     };
   };
 }

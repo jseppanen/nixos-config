@@ -1,4 +1,12 @@
 #-------------------------------------------------------------------------------
+# Conda
+#-------------------------------------------------------------------------------
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+# eval /opt/mambaforge/bin/conda "shell.fish" "hook" $argv | source
+# <<< conda initialize <<<
+
+#-------------------------------------------------------------------------------
 # SSH Agent
 #-------------------------------------------------------------------------------
 function __ssh_agent_is_started -d "check if ssh agent is already started"
@@ -58,57 +66,47 @@ mkdir -p $HOME/.vim/{backup,swap,undo}
 #-------------------------------------------------------------------------------
 # Prompt
 #-------------------------------------------------------------------------------
-# Do not show any greeting
-set --universal --erase fish_greeting
-function fish_greeting; end
-funcsave fish_greeting
+# disable greeting message
+set -U fish_greeting
 
-# bobthefish theme
-set -g theme_color_scheme dracula
+# set prompt (overriding any conda prompts)
+# starship init fish | source
 
-# My color scheme
-set -U fish_color_normal normal
-set -U fish_color_command F8F8F2
-set -U fish_color_quote F1FA8C
-set -U fish_color_redirection 8BE9FD
-set -U fish_color_end 50FA7B
-set -U fish_color_error FF5555
-set -U fish_color_param 5FFFFF
-set -U fish_color_comment 6272A4
-set -U fish_color_match --background=brblue
-set -U fish_color_selection white --bold --background=brblack
-set -U fish_color_search_match bryellow --background=brblack
-set -U fish_color_history_current --bold
-set -U fish_color_operator 00a6b2
-set -U fish_color_escape 00a6b2
+#-------------------------------------------------------------------------------
+# Theme
+#-------------------------------------------------------------------------------
+set -U fish_color_autosuggestion 585858
+set -U fish_color_cancel \x2dr
+set -U fish_color_command a1b56c
+set -U fish_color_comment f7ca88
 set -U fish_color_cwd green
 set -U fish_color_cwd_root red
-set -U fish_color_valid_path --underline
-set -U fish_color_autosuggestion BD93F9
-set -U fish_color_user brgreen
+set -U fish_color_end ba8baf
+set -U fish_color_error ab4642
+set -U fish_color_escape 86c1b9
+set -U fish_color_history_current \x2d\x2dbold
 set -U fish_color_host normal
-set -U fish_color_cancel -r
+set -U fish_color_host_remote yellow
+set -U fish_color_match 7cafc2
+set -U fish_color_normal normal
+set -U fish_color_operator 7cafc2
+set -U fish_color_param d8d8d8
+set -U fish_color_quote f7ca88
+set -U fish_color_redirection d8d8d8
+set -U fish_color_search_match bryellow\x1e\x2d\x2dbackground\x3dbrblack
+set -U fish_color_selection white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrblack
+set -U fish_color_status red
+set -U fish_color_user brgreen
+set -U fish_color_valid_path \x2d\x2dunderline
 set -U fish_pager_color_completion normal
-set -U fish_pager_color_description B3A06D yellow
-set -U fish_pager_color_prefix white --bold --underline
-set -U fish_pager_color_progress brwhite --background=cyan
-
-# Override the nix prompt for the theme so that we show a more concise prompt
-function __bobthefish_prompt_nix -S -d 'Display current nix environment'
-    [ "$theme_display_nix" = 'no' -o -z "$IN_NIX_SHELL" ]
-    and return
-
-    __bobthefish_start_segment $color_nix
-    echo -ns N ' '
-
-    set_color normal
-end
+set -U fish_pager_color_description B3A06D\x1eyellow
+set -U fish_pager_color_prefix normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
+set -U fish_pager_color_progress brwhite\x1e\x2d\x2dbackground\x3dcyan
 
 #-------------------------------------------------------------------------------
 # Vars
 #-------------------------------------------------------------------------------
-# Modify our path to include our Go binaries
-contains $HOME/code/go/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/code/go/bin
+# add ~/bin to path
 contains $HOME/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/bin
 
 # Exported variables

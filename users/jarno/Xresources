@@ -1,12 +1,12 @@
-! URXVT FONT SETTINGS
-!------------------------------------------------
-Xft.dpi: 180
-Xft.autohint: true
+! HiDPI
+Xft.dpi: 150
 Xft.antialias: true
-Xft.hinting: true
-Xft.hintstyle: hintslight
 Xft.rgba: rgb
 Xft.lcdfilter: lcddefault
+
+! xterm
+XTerm*faceName: Hack Mono
+XTerm*faceSize: 12
 
 ! TERMINAL COLORS
 !------------------------------------------------
