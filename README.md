@@ -15,8 +15,6 @@ Boot the VM from the ISO image and start the installation from the console. Note
 
 ```bash
 sudo su
-passwd
-# change to root
 nix-channel --add https://nixos.org/channels/nixos-unstable
 nix-channel --update
 nix-shell -p nix https://github.com/jseppanen/nixos-config/archive/main.tar.gz
@@ -26,7 +24,7 @@ The installation takes a couple of minutes and after that the VM reboots automat
 
 ## Development
 
-The installation can also be run locally over SSH, you need to boot from the ISO image and get the VM's IP address with `ifconfig`.
+The installation can also be run locally over SSH, you need to boot from the ISO image and get the VM's IP address with `ifconfig`. The root password also should be changed to something (root).
 
 ```make
 NIXADDR=192.168.XX.YY make vm/bootstrap
