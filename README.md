@@ -11,16 +11,21 @@ Setting up a NixOS dev VM on a Mac M1 laptop.
 
 ## Installation
 
-Boot the VM from the ISO image and start the installation from the console. Note that the unstable channel is needed because release-21.11 has too old Nix version (2.3).
+Boot the VM from the ISO image and start the installation from the console.
 
 ```bash
 sudo su
-nix-channel --add https://nixos.org/channels/nixos-unstable
-nix-channel --update
-nix-shell -p nix https://github.com/jseppanen/nixos-config/archive/main.tar.gz
+loadkeys fi  # change keyboard layout if needed
+nix-shell https://github.com/jseppanen/nixos-config/archive/main.tar.gz
 ```
 
 The installation takes a couple of minutes and after that the VM reboots automatically.
+
+By default, the OS is installed to the `/dev/vda` disk, which corresponds to the VirtIO Drive in QEMU, but this can be changed as follows:
+
+```bash
+sudo nix-shell --argstr blockDevice sda https://github.com/jseppanen/nixos-config/archive/main.tar.gz
+```
 
 ## Development
 

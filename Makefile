@@ -3,9 +3,6 @@ NIXADDR ?= 192.168.64.6
 NIXPORT ?= 22
 NIXUSER ?= jarno
 
-# Settings
-NIXBLOCKDEVICE ?= vda
-
 # Get the path to this Makefile and directory
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
@@ -29,9 +26,7 @@ vm/bootstrap:
 
 vm/install:
 	ssh $(SSH_OPTIONS) -p$(NIXPORT) $(NIXUSER)@$(NIXADDR) " \
-		sudo nix-channel --add https://nixos.org/channels/nixos-unstable; \
-		sudo nix-channel --update; \
-		sudo nix-shell -p nix /nix-config/default.nix \
+		sudo nix-shell /nix-config \
 	"
 
 # copy our secrets into the VM
