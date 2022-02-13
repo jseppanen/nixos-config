@@ -28,10 +28,10 @@ vm/bootstrap:
 	# $(MAKE) vm/secrets
 
 vm/install:
-	ssh $(SSH_OPTIONS) -p$(NIXPORT) root@$(NIXADDR) " \
-		nix-channel --add https://nixos.org/channels/nixos-unstable; \
-		nix-channel --update; \
-		nix-shell -p nix /nix-config/default.nix \
+	ssh $(SSH_OPTIONS) -p$(NIXPORT) $(NIXUSER)@$(NIXADDR) " \
+		sudo nix-channel --add https://nixos.org/channels/nixos-unstable; \
+		sudo nix-channel --update; \
+		sudo nix-shell -p nix /nix-config/default.nix \
 	"
 
 # copy our secrets into the VM
@@ -55,7 +55,7 @@ vm/copy:
 		--exclude='.git-crypt/' \
 		--exclude='iso/' \
 		--rsync-path="sudo rsync" \
-		$(MAKEFILE_DIR)/ root@$(NIXADDR):/nix-config
+		$(MAKEFILE_DIR)/ $(NIXUSER)@$(NIXADDR):/nix-config
 
 vm/copyback:
 	rsync -av -e 'ssh $(SSH_OPTIONS) -p$(NIXPORT)' \
@@ -64,4 +64,4 @@ vm/copyback:
 		--exclude='.git-crypt/' \
 		--exclude='iso/' \
 		--rsync-path="sudo rsync" \
-		root@$(NIXADDR):/nix-config/ $(MAKEFILE_DIR)
+		$(NIXUSER)@$(NIXADDR):/nix-config/ $(MAKEFILE_DIR)
