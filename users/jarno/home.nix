@@ -1,4 +1,16 @@
 { config, lib, pkgs, ... }: {
+
+  imports = [
+    (let
+      pkg = fetchTarball {
+        url = "https://github.com/msteen/nixos-vscode-server/archive/master.tar.gz";
+        sha256 = "00aqwrr6bgvkz9bminval7waxjamb792c0bz894ap8ciqawkdgxp";
+      };
+    in
+      "${pkg}/modules/vscode-server/home.nix"
+    )
+  ];
+
   xdg.enable = true;
 
   #---------------------------------------------------------------------
@@ -263,6 +275,8 @@
   #   defaultCacheTtl = 31536000;
   #   maxCacheTtl = 31536000;
   # };
+
+  services.vscode-server.enable = true;
 
   xresources.extraConfig = builtins.readFile ./Xresources;
 
