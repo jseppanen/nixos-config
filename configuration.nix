@@ -156,16 +156,14 @@
   };
 
   # Share our host filesystem
+  # (depends on https://github.com/utmapp/UTM/issues/2551)
   # fileSystems."/host" = {
-  #   fsType = "fuse./run/current-system/sw/bin/vmhgfs-fuse";
-  #   device = ".host:/";
+  #   fsType = "9p";
+  #   device = "qemu-shared-dir";
   #   options = [
-  #     "umask=22"
-  #     "uid=1000"
-  #     "gid=1000"
-  #     "allow_other"
-  #     "auto_unmount"
-  #     "defaults"
+  #     "trans=virtio"
+  #     "version=9p2000.L"
+  #     "msize=104857600"
   #   ];
   # };
 
