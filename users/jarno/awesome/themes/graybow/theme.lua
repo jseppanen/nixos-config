@@ -213,6 +213,11 @@ local cpu = lain.widget.cpu({
 -- Coretemp
 local temp = lain.widget.temp({
     settings = function()
+        if coretemp_now == "N/A" then
+            widget:set_markup("")
+            return
+        end
+
         local icon = icon_thermometer_half
         update_widget("temp", widget, coretemp_now >= 70,
                       markup_icon_text("#ab885e", icon, coretemp_now .. "°C"))
