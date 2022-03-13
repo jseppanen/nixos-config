@@ -73,7 +73,7 @@
     keyMap = "fi";
   };
 
-  # copy-paste & file sharing in QEMU
+  # copy-paste in QEMU
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
 
@@ -106,10 +106,12 @@
       # AARCH64: For now, on Apple Silicon, we must manually set the
       # display resolution. This is a known issue with VMware Fusion.
       sessionCommands = ''
+        ${pkgs.spice-vdagent}/bin/spice-vdagent
         ${pkgs.xlibs.xset}/bin/xset r rate 200 40
-      '' + (if currentSystem == "aarch64-linux" then ''
-        ${pkgs.xorg.xrandr}/bin/xrandr -s '1920x1440'
-      '' else "");
+      '';
+      # '' + (if currentSystem == "aarch64-linux" then ''
+      #   ${pkgs.xorg.xrandr}/bin/xrandr -s '1920x1440'
+      # '' else "");
     };
 
     windowManager.awesome = {
