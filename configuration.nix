@@ -166,22 +166,12 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    home-manager
     killall
     qemu-utils
     rxvt_unicode
     vim
     xclip
-
-    # UTM on M1 doesn't support automatic resizing
-    # (2160 pixel height is without the notch)
-    (writeShellScriptBin "xrandr-mbp" ''
-      xrandr --newmode "3456x2160"  642.00  3456 3744 4120 4784  2160 2163 2169 2237 -hsync +vsync
-      xrandr --addmode Virtual-1 "3456x2160"
-      xrandr -s "3456x2160"
-    '')
-    (writeShellScriptBin "xrandr-medium" ''
-      xrandr -s "1920x1440"
-    '')
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

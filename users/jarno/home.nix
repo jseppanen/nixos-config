@@ -99,13 +99,24 @@
     config = {
       whitelist = {
         prefix= [
-          "$HOME/code/go/src/github.com/hashicorp"
-          "$HOME/code/go/src/github.com/mitchellh"
+          "$HOME/dev"
         ];
-
-        exact = ["$HOME/.envrc"];
       };
     };
+
+    stdlib = ''
+      use_poetry() {
+        if [[ ! -f pyproject.toml ]]; then
+          log_error 'No pyproject.toml found.  Use `poetry new` or `poetry init` to create one first.'
+          exit 2
+        fi
+
+        local VENV=$(dirname $(poetry run which python))
+        export VIRTUAL_ENV=$(echo "$VENV" | rev | cut -d'/' -f2- | rev)
+        export POETRY_ACTIVE=1
+        PATH_add "$VENV"
+      }
+    '';
   };
 
   programs.emacs = {
@@ -159,9 +170,16 @@
       undo = "reset HEAD^";
     };
     ignores = [
+      ".DS_Store"
+      ".coverage"
+      ".coverage.*"
+      ".hypothesis"
+      ".ipynb_checkpoints"
+      ".mypy_cache"
       ".pytest_cache"
       ".vscode"
       "__pycache__"
+      "*.egg-info"
       "dist"
       "node_modules"
       "spark-warehouse"
