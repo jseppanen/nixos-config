@@ -144,8 +144,9 @@
   # Manage fonts.
   fonts.fonts = [
     pkgs.fira-code
+    pkgs.font-awesome   # for Awesome graybow theme
     pkgs.hack-font
-    pkgs.terminus_font
+    pkgs.terminus_font  # for Awesome graybow theme
     (pkgs.nerdfonts.override {
       fonts = [ "FiraCode" "Hack" ];
     })
