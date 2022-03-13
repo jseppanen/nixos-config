@@ -1,0 +1,6 @@
+[submodule "users/jarno/awesome/lain"]
+	path = users/jarno/awesome/lain
+	url = https://github.com/jseppanen/lain.git
+[submodule "users/jarno/awesome/freedesktop"]
+	path = users/jarno/awesome/freedesktop
+	url = https://github.com/lcpz/awesome-freedesktop.git

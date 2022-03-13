@@ -141,19 +141,15 @@
     ];
   };
 
-  # Manage fonts. We pull these from a secret directory since most of these
-  # fonts require a purchase.
-  fonts = {
-    fontDir.enable = true;
-
-    fonts = [
-      pkgs.fira-code
-      pkgs.hack-font
-      (pkgs.nerdfonts.override {
-        fonts = [ "FiraCode" "Hack" ];
-      })
-    ];
-  };
+  # Manage fonts.
+  fonts.fonts = [
+    pkgs.fira-code
+    pkgs.hack-font
+    pkgs.terminus_font
+    (pkgs.nerdfonts.override {
+      fonts = [ "FiraCode" "Hack" ];
+    })
+  ];
 
   # Share our host filesystem
   # (depends on https://github.com/utmapp/UTM/issues/2551)

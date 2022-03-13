@@ -56,6 +56,8 @@
 
   home.file.".inputrc".source = ./inputrc;
 
+  xdg.configFile."awesome".source = ./awesome;
+
   # xdg.configFile."i3/config".text = builtins.readFile ./i3;
   # xdg.configFile."rofi/config.rasi".text = builtins.readFile ./rofi;
 

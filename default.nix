@@ -24,7 +24,7 @@ pkgs.mkShell {
     mount /dev/disk/by-label/nixos /mnt
     mkdir -p /mnt/boot
     mount /dev/disk/by-label/boot /mnt/boot
-    NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-install --flake "${./.}#dev" --no-root-passwd -v
+    NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-install --flake "${./.}?submodules=1#dev" --no-root-passwd -v
     reboot
   '';
 }
