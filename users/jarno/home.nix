@@ -22,7 +22,6 @@
   # not a huge list.
   home.packages = [
     pkgs.bat
-    pkgs.conda
     pkgs.fd
     pkgs.firefox
     pkgs.fzf
@@ -31,6 +30,7 @@
     pkgs.glances
     pkgs.htop
     pkgs.jq
+    pkgs.micromamba
     pkgs.ripgrep
     pkgs.rofi
     pkgs.starship
