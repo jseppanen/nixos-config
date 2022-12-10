@@ -145,17 +145,19 @@
     })
   ];
 
-  # Share our host filesystem
-  # (depends on https://github.com/utmapp/UTM/issues/2551)
-  # fileSystems."/host" = {
-  #   fsType = "9p";
-  #   device = "qemu-shared-dir";
-  #   options = [
-  #     "trans=virtio"
-  #     "version=9p2000.L"
-  #     "msize=104857600"
-  #   ];
-  # };
+  # VirtFS directory sharing
+  fileSystems."/mac" = {
+    fsType = "9p";
+    device = "share";
+    options = [
+      "trans=virtio"
+      "version=9p2000.L"
+      "msize=104857600"
+      "noatime"
+      "nofail"
+      "defaults"
+    ];
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
