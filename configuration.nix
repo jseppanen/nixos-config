@@ -1,10 +1,12 @@
-{ config, pkgs, currentSystem, ... }:
+{ config, pkgs, ... }:
 
 {
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_5_16;
+  # boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_0;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.consoleMode = "0";
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking = {
@@ -27,12 +29,6 @@
     firewall.enable = false;
   };
 
-  # use unstable nix so we can access flakes
-  nix = {
-    package = pkgs.nixUnstable;
-    extraOptions = "experimental-features = nix-command flakes";
-   };
-
   # Lots of stuff that uses aarch64 that claims doesn't work, but actually works.
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnsupportedSystem = true;
@@ -41,16 +37,18 @@
     # (import ./users/jarno/vim.nix)
   ];
 
-  hardware.opengl = {
-    enable = true;
-    package = (pkgs.mesa.override {
-      galliumDrivers = [ "virgl" "swrast" ];
-      vulkanDrivers = [ ];
-      enableGalliumNine = false;
-      enableOSMesa = false;
-      enableOpenCL = false;
-    }).drivers;
-  };
+  # disable VirGL for now
+  # hardware.opengl = {
+  #  enable = true;
+  #  package = (pkgs.mesa.override {
+  #    galliumDrivers = [ "virgl" "swrast" ];
+  #    vulkanDrivers = [ ];
+  #    enableGalliumNine = false;
+  #    enableOSMesa = false;
+  #    enableOpenCL = false;
+  #  }).drivers;
+  # };
+  environment.variables.LIBGL_ALWAYS_SOFTWARE = "1";
 
   # We expect to run the VM on hidpi machines.
   hardware.video.hidpi.enable = true;
@@ -76,6 +74,7 @@
   # copy-paste in QEMU
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
+  # services.spice-webdavd.enable = true;
 
   # https://discourse.nixos.org/t/qemu-guest-agent-on-hetzner-cloud-doesnt-work/8864
   # systemd.services.qemu-guest-agent.path = [ pkgs.shadow ];
@@ -103,9 +102,8 @@
       autoLogin.enable = true;
       autoLogin.user = "jarno";
       sessionCommands = ''
-        export LIBGL_ALWAYS_SOFTWARE=1  # virgl doesn't yet work with kitty
         ${pkgs.spice-vdagent}/bin/spice-vdagent
-        ${pkgs.xlibs.xset}/bin/xset r rate 200 40
+        ${pkgs.xorg.xset}/bin/xset r rate 200 40
       '';
     };
 
@@ -189,5 +187,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "21.11"; # Did you read the comment?
+  system.stateVersion = "22.11"; # Did you read the comment?
 }

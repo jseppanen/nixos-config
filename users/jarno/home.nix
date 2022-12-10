@@ -1,10 +1,12 @@
 { config, lib, pkgs, ... }: {
 
+  home.stateVersion = "22.11";
+
   imports = [
     (let
       pkg = fetchTarball {
-        url = "https://github.com/msteen/nixos-vscode-server/archive/master.tar.gz";
-        sha256 = "00aqwrr6bgvkz9bminval7waxjamb792c0bz894ap8ciqawkdgxp";
+        url = "https://github.com/msteen/nixos-vscode-server/archive/c54b714db58ad05d064f394d6603751ee6bd04f6.tar.gz";
+        sha256 = "1qga1cmpavyw90xap5kfz8i6yz85b0blkkwvl00sbaxqcgib2rvv";
       };
     in
       "${pkg}/modules/vscode-server/home.nix"
@@ -301,9 +303,10 @@
   xresources.extraConfig = builtins.readFile ./Xresources;
 
   # Make cursor not tiny on HiDPI screens
-  xsession.pointerCursor = {
+  home.pointerCursor = {
     name = "Vanilla-DMZ";
     package = pkgs.vanilla-dmz;
     size = 128;
+    x11.enable = true;
   };
 }
