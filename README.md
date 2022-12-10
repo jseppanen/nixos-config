@@ -5,13 +5,18 @@ Setting up a NixOS dev VM on a Mac M1 laptop.
 
 ## Dependencies
 
-**Emulator:** download [UTM.dmg](https://github.com/utmapp/UTM/releases/download/v3.0.4-2/UTM.dmg) from [github.com/utmapp/UTM](https://github.com/utmapp/UTM/releases/).
+**Emulator:** download [UTM.dmg](https://github.com/utmapp/UTM/releases/download/v4.0.9/UTM.dmg) from [github.com/utmapp/UTM](https://github.com/utmapp/UTM/releases/).
 
-**Image:** download [nixos-minimal-...-aarch64-linux.iso](https://hydra.nixos.org/build/166864442/download/1/nixos-minimal-21.11.335858.592b893530e-aarch64-linux.iso) from [hydra.nixos.org](https://hydra.nixos.org/job/nixos/release-21.11/nixos.iso_minimal.aarch64-linux).
+**Image:** download [nixos-minimal-22.11...aarch64-linux.iso](https://channels.nixos.org/nixos-22.11/latest-nixos-minimal-aarch64-linux.iso) from [nixos.org](https://nixos.org/download.html#nixos-iso).
 
 ## Installation
 
-Boot the VM from the ISO image and start the installation from the console.
+Create a new Linux VM in UTM:
+* Use NixOS boot ISO image
+* Disable hardware OpenGL acceleration
+* Enable retina mode
+
+Boot the VM and start the installation from the console.
 
 ```bash
 sudo su
