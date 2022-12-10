@@ -37,6 +37,7 @@
     pkgs.rofi
     pkgs.starship
     pkgs.tree
+    pkgs.vscode
     pkgs.watch
     pkgs.zathura
     pkgs._1password
@@ -199,6 +200,9 @@
       init.defaultBranch = "main";
     };
   };
+
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
 
   # programs.tmux = {
   #   enable = true;
