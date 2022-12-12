@@ -83,11 +83,16 @@
   services.xserver = {
     enable = true;
     layout = "fi";
-    dpi = 192;
+    dpi = 220;  # macbook air
     xkbOptions = "eurosign:e";
 
     # Enable touchpad support
-    libinput.enable = true;
+    libinput = {
+      enable = true;
+      touchpad = {
+        naturalScrolling = true;
+      };
+    };
 
     videoDrivers = [ "virgl" ];
 
